@@ -8,6 +8,7 @@ type Product{
     description:String
     category:String
     productImage:String
+    
 
 }
 `

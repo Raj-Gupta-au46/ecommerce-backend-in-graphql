@@ -64,6 +64,7 @@
 
 
 import Category from '../models/category.model.js';
+import mongoose from 'mongoose';
 
 function generateCategoryId() {
   // Generate a unique category ID
@@ -77,14 +78,13 @@ function generateCategoryId() {
 
 const categoryResolver = {
   Query: {
-    getCategory: (parent, { id }) => {
-      const category = Category.find((category) => category.id === id);
+    getCategory: async (parent, { id }) => {
+      const objectId = mongoose.Types.ObjectId.createFromHexString(id);
+   const category = await Category.findById(objectId)
+        
+    
+      return category
 
-      if (!category) {
-        throw new Error('Category not found');
-      }
-
-      return category;
     },
     getAllCategory: () => {
       return Category.find();

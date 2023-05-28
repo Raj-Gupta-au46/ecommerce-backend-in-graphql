@@ -1,12 +1,14 @@
 import gql from 'graphql-tag'
 
-const cartTypeDefs = gql`
+const typeDefs = gql`
 type Cart {
-    _id:ID
-    products:Product
-    User:User
-
+  _id:ID
+  items:[CartItem]
+  Product:[Product]
+  User:User
+  
 }
-`
+ 
+`;
 
-export default cartTypeDefs
+export default typeDefs;

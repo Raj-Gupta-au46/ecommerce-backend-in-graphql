@@ -9,4 +9,5 @@ import cartTypeDefs from "./typeDefs/cart.typeDefs.js";
 import orderSchema from "./order.schema.js";
 import orderTypeDefs from "./typeDefs/order.typeDefs.js";
 
+
 export default [ userSchema,userTypeDefs , productSchema,productTypeDefs , categorySchema,categoryTypeDefs , cartSchema,cartTypeDefs , orderTypeDefs,orderSchema ]

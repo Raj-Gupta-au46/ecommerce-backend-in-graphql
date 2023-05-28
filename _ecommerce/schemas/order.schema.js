@@ -2,7 +2,7 @@
 
 import gql from 'graphql-tag';
 
-const ordersSchema = gql`
+const orderSchema = gql`
   type Order {
     _id: ID!
     user: User!
@@ -30,7 +30,7 @@ const ordersSchema = gql`
   }
 
   type Mutation {
-    createOrder(input: CreateOrderInput!): Order!
+    createOrder(input: CreateOrderInput!): Order
   }
 
   input CreateOrderInput {
@@ -47,4 +47,4 @@ const ordersSchema = gql`
   }
 `;
 
-export default ordersSchema;
+export default orderSchema;

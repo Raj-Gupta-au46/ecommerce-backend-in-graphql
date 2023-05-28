@@ -1,98 +1,102 @@
 
+import CartModel from '../models/cart.model.js';
+import UserModel from '../models/user.models.js';
+import ProductModel from '../models/product.model.js';
+import { ApolloError } from 'apollo-server-errors';
 
-import UserModel from "../models/user.models.js";
-import Product from "../models/product.model.js";
-import throwCustomError, { ErrorTypes } from '../helpers/error-handler.helper.js';
-
-const cartResolver = {
+const resolvers = {
   Query: {
-    getUser: async (_, { userId }) => {
-      const user = await UserModel.findById(userId);
-      return user;
+    getCart: async (_, { userId }) => {
+      try {
+        const cart = await CartModel.findOne({ user: user }).populate('products.product');
+        return cart;
+      } catch (error) {
+        throw new ApolloError('Failed to fetch cart', 'FETCH_CART_ERROR');
+      }
     },
   },
   Mutation: {
-    addProductToCart: async (_, { userId, productId, quantity }) => {
-      try {
-        const user = await UserModel.findById(userId);
-        if (!user) {
-          throwCustomError('User not found', ErrorTypes.NOT_FOUND);
-        }
+  
+      addProductToCart: async (_, { userId, productId, quantity }) => {
+        try {
+          const existingCart = await CartModel.findOne({ user: userId });
 
-        const product = await Product.findById(productId);
-        if (!product) {
-          throwCustomError('Product not found', ErrorTypes.NOT_FOUND);
-        }
+          if (existingCart) {
+            throw new Error('Cart already exists for this user');
+          }
+  
+          const newCart = new CartModel({
+            user: userId,
+            products: [
+              {
+                product: productId,
+                quantity: quantity,
+              },
+            ],
+          });
+  
+          const createdCart = await newCart.save();
+  
+          return createdCart;
+        } catch (error) {
 
-        const cartItem = {
-          product: product._id,
-          quantity,
-        };
-
-        user.cart.products.push(cartItem);
-        await user.save();
-
-        return user.cart;
-      } catch (error) {
-        throwCustomError(error.message, ErrorTypes.INTERNAL_SERVER_ERROR);
+        throw new ApolloError('Failed to add product to cart', 'ADD_PRODUCT_TO_CART_ERROR');
       }
     },
+    
     updateCartItemQuantity: async (_, { userId, cartItemId, quantity }) => {
       try {
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findByIdAndUpdate(
+          userId,
+          { $set: { 'cart.products.$[elem].quantity': quantity } },
+          { new: true, arrayFilters: [{ 'elem._id': cartItemId }] }
+        );
+        
         if (!user) {
-          throwCustomError('User not found', ErrorTypes.NOT_FOUND);
+          throw new Error('User not found');
         }
-
-        const cartItem = user.cart.products.find(item => item._id.toString() === cartItemId);
-        if (!cartItem) {
-          throwCustomError('Cart item not found', ErrorTypes.NOT_FOUND);
-        }
-
-        cartItem.quantity = quantity;
-        await user.save();
-
+        
         return user.cart;
       } catch (error) {
-        throwCustomError(error.message, ErrorTypes.INTERNAL_SERVER_ERROR);
+        throw new Error('Failed to update cart item quantity');
       }
-    },
-    removeProductFromCart: async (_, { userId, cartItemId }) => {
+    
+  },
+    removeProductFromCart: async (_, { cartItemId }) => {
       try {
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findOneAndUpdate(
+          { 'cart.products._id': cartItemId },
+          { $pull: { 'cart.products': { _id: cartItemId } } },
+          { new: true }
+        ).populate('cart.products.product');
+  
         if (!user) {
-          throwCustomError('User not found', ErrorTypes.NOT_FOUND);
+          throw new ApolloError('Failed to remove product from cart', 'REMOVE_PRODUCT_FROM_CART_ERROR');
         }
-
-        const cartItemIndex = user.cart.products.findIndex(item => item._id.toString() === cartItemId);
-        if (cartItemIndex === -1) {
-          throwCustomError('Cart item not found', ErrorTypes.NOT_FOUND);
-        }
-
-        user.cart.products.splice(cartItemIndex, 1);
-        await user.save();
-
+  
         return user.cart;
       } catch (error) {
-        throwCustomError(error.message, ErrorTypes.INTERNAL_SERVER_ERROR);
+        throw new ApolloError('Failed to remove product from cart', 'REMOVE_PRODUCT_FROM_CART_ERROR');
       }
     },
     clearCart: async (_, { userId }) => {
       try {
-        const user = await UserModel.findById(userId);
-        if (!user) {
-          throwCustomError('User not found', ErrorTypes.NOT_FOUND);
+        const cart = await UserModel.findOneAndUpdate(
+          { _id: userId },
+          { $unset: { cart: 1 } },
+          { new: true }
+        ).populate('cart.products.product');
+  
+        if (!cart) {
+          throw new ApolloError('Failed to clear cart', 'CLEAR_CART_ERROR');
         }
-
-        user.cart.products = [];
-        await user.save();
-
-        return user.cart;
+  
+        return cart.cart;
       } catch (error) {
-        throwCustomError(error.message, ErrorTypes.INTERNAL_SERVER_ERROR);
+        throw new ApolloError('Failed to clear cart', 'CLEAR_CART_ERROR');
       }
-    },
+    },        
   },
 };
 
-export default cartResolver;
+export default resolvers;

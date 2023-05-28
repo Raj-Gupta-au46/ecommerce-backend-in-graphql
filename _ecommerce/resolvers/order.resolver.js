@@ -1,55 +1,61 @@
-
-
-import OrderModel from "../models/order.model.js";
-import UserModel from "../models/user.model.js";
+import Order from "../models/order.model.js";
+import UserModel from "../models/user.models.js";
 import Product from "../models/product.model.js";
 
 const orderResolver = {
   Query: {
     getOrderById: async (_, { orderId }) => {
-      const order = await OrderModel.findById(orderId);
+      const order = await Order.findById(orderId);
       return order;
     },
   },
   Mutation: {
-    createOrder: async (_, args) => {
-      const { input } = args;
-      const { userId, items } = input;
+    createOrder: async (_, { input }) => {
+      const { user, items, totalPrice, totalItems, totalQuantity } = input;
 
       // Create a new order using the OrderModel
-      const newOrder = new OrderModel({
-        user: userId,
+      const newOrder = new Order({
+        user,
         items: items.map((item) => ({
-          product: item.productId,
+          product: item.product,
           quantity: item.quantity,
         })),
+        totalPrice,
+        totalItems,
+        totalQuantity,
       });
 
       // Save the order to the database
       const createdOrder = await newOrder.save();
 
-      return createdOrder; // Return the created order
+      // Retrieve the populated order from the database
+      const populatedOrder = await Order.findById(createdOrder._id)
+        .populate("user")
+        .populate("items.product");
+
+      return populatedOrder; // Return the populated order
     },
   },
+
   Order: {
     user: async (parent) => {
-      console.log(parent , "0")
       const user = await UserModel.findById(parent.user);
       return user;
     },
     items: async (parent) => {
-      console.log(parent , "1")
-      const items = await Product.find({ _id: { $in: parent.items } });
+      const itemIds = parent.items.map((item) => item.product);
+      const items = await Product.find({ _id: { $in: itemIds } });
       return items;
     },
   },
   OrderItem: {
     product: async (parent) => {
-      console.log(parent , "2")
       const product = await Product.findById(parent.product);
       return product;
     },
+    quantity: (parent) => parent.quantity,
   },
 };
 
 export default orderResolver;
+
