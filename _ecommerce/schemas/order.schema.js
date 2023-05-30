@@ -1,6 +1,4 @@
-
-
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 const orderSchema = gql`
   type Order {

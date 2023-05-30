@@ -1,4 +1,4 @@
-import UserModel from '../models/user.models.js';
+import UserModel from "../models/user.models.js";
 
 const userHelper = {
   isEmailAlreadyExist: async (email) => {

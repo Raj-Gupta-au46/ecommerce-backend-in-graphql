@@ -1,5 +1,5 @@
-import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { GraphQLError } from 'graphql';
+import { ApolloServerErrorCode } from "@apollo/server/errors";
+import { GraphQLError } from "graphql";
 
 export const ErrorTypes = {
   BAD_USER_INPUT: {
@@ -11,15 +11,15 @@ export const ErrorTypes = {
     errorStatus: 400,
   },
   NOT_FOUND: {
-    errorCode: 'NOT_FOUND',
+    errorCode: "NOT_FOUND",
     errorStatus: 404,
   },
   UNAUTHENTICATED: {
-    errorCode: 'UNAUTHENTICATED',
+    errorCode: "UNAUTHENTICATED",
     errorStatus: 401,
   },
   ALREADY_EXISTS: {
-    errorCode: 'ALREADY_EXISTS',
+    errorCode: "ALREADY_EXISTS",
     errorStatus: 400,
   },
   INTERNAL_SERVER_ERROR: {
@@ -30,7 +30,6 @@ export const ErrorTypes = {
 
 //throwCustomError function
 export default (errorMessage, errorType) => {
-  
   throw new GraphQLError(errorMessage, {
     extensions: {
       code: errorType.errorCode,

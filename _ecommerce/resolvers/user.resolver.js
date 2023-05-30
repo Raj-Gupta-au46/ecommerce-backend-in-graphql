@@ -1,11 +1,10 @@
-
-import UserModel from '../models/user.models.js';
-import userHelper from '../helpers/user.helper.js';
-import jwt from 'jsonwebtoken';
+import UserModel from "../models/user.models.js";
+import userHelper from "../helpers/user.helper.js";
+import jwt from "jsonwebtoken";
 import throwCustomError, {
   ErrorTypes,
-} from '../helpers/error-handler.helper.js';
-import { GraphQLError } from 'graphql';
+} from "../helpers/error-handler.helper.js";
+import { GraphQLError } from "graphql";
 
 const userResolver = {
   Query: {
@@ -36,7 +35,7 @@ const userResolver = {
       const isUserExists = await userHelper.isEmailAlreadyExist(email);
       if (isUserExists) {
         throwCustomError(
-          'Email is already registered',
+          "Email is already registered",
           ErrorTypes.ALREADY_EXISTS
         );
       }
@@ -54,7 +53,7 @@ const userResolver = {
       );
 
       return {
-        __typename: 'UserWithToken',
+        __typename: "UserWithToken",
         ...user._doc,
         userJwtToken: {
           token: token,
@@ -80,7 +79,7 @@ const userResolver = {
         };
       }
       throwCustomError(
-        'Invalid email or password entered.',
+        "Invalid email or password entered.",
         ErrorTypes.BAD_USER_INPUT
       );
     },

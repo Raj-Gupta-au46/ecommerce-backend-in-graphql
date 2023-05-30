@@ -58,4 +58,3 @@ const orderResolver = {
 };
 
 export default orderResolver;
-

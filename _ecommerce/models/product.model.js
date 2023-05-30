@@ -1,5 +1,5 @@
-import mongoose, { Schema, model } from 'mongoose';
-import Category from './category.model.js';
+import mongoose, { Schema, model } from "mongoose";
+import Category from "./category.model.js";
 
 const productSchema = new Schema({
   name: {
@@ -17,15 +17,12 @@ const productSchema = new Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: Category,
-    
   },
   productImage: {
     type: String,
   },
 });
 
-const Product = model('Product', productSchema);
+const Product = model("Product", productSchema);
 
 export default Product;
-
-
