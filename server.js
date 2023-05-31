@@ -2,16 +2,22 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
-import allTypeDefs from "./_ecommerce/schemas/index.schema.js";
-import allResolvers from "./_ecommerce/resolvers/index.resolver.js";
-import context from "./_ecommerce/context/context.js";
+import allTypeDefs from "./src/schemas/index.schema.js";
+import allResolvers from "./src/resolvers/index.resolver.js";
+import context from "./src/context/context.js";
+import {
+  constraintDirectiveTypeDefs,
+  constraintDirective,
+} from "graphql-constraint-directive";
 
 dotenv.config();
 
-// “merging” types and resolvers
 const server = new ApolloServer({
-  typeDefs: allTypeDefs,
+  typeDefs: [constraintDirectiveTypeDefs, allTypeDefs],
   resolvers: allResolvers,
+  schemaDirectives: {
+    constraint: constraintDirective,
+  },
   includeStacktraceInErrorResponses: false, //to exclude stackTrace parameter from error messages
   introspection: true,
 });

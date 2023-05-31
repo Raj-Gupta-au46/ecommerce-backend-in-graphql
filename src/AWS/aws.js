@@ -1,8 +1,8 @@
 import aws from "aws-sdk";
 // import multer from "multer"
 aws.config.update({
-  accessKeyId: "AKIAY3L35MCRZNIRGT6N",
-  secretAccessKey: "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",
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
   region: "ap-south-1",
 });
 //===============================uploding image in aws bucket=================================//

@@ -88,17 +88,18 @@ const resolvers = {
     },
     clearCart: async (_, { userId }) => {
       try {
-        const cart = await UserModel.findOneAndUpdate(
-          { _id: userId },
-          { $unset: { cart: 1 } },
-          { new: true }
-        ).populate("cart.products.product");
+        const user = await UserModel.findById(userId).populate(
+          "cart.products.product"
+        );
 
-        if (!cart) {
-          throw new ApolloError("Failed to clear cart", "CLEAR_CART_ERROR");
+        if (!user) {
+          throw new ApolloError("User not found", "USER_NOT_FOUND");
         }
 
-        return cart.cart;
+        user.cart = { products: [] }; // Clear the cart by setting an empty products array
+        await user.save();
+        console.log(user.cart);
+        return user.cart;
       } catch (error) {
         throw new ApolloError("Failed to clear cart", "CLEAR_CART_ERROR");
       }

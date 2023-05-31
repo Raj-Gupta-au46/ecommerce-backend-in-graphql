@@ -17,7 +17,10 @@ const categoryResolver = {
       return category;
     },
     getAllCategory: () => {
-      return Category.find();
+      // console.log("Executing getAllCategory resolver");
+      const categories = Category.find();
+      // console.log("Categories:", categories); // Log the result of Category.find()
+      return categories;
     },
   },
   Mutation: {
