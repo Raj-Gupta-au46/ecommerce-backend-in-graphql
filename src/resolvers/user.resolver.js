@@ -33,9 +33,33 @@ const userResolver = {
   Mutation: {
     signup: async (_, { input }) => {
       const { email, password, fname, lname } = input;
-      const errors = [];
+
       if (!validator.isEmail(email)) {
-        errors.push({ message: "E-mail is invalid" });
+        throwCustomError(
+          "E-mail type is not in the correct format",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+
+      if (password.length < 6) {
+        throwCustomError(
+          "Password should be at least 6 characters long",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+
+      if (fname.length < 2 || fname.length > 150) {
+        throwCustomError(
+          "First name should be between 2 and 150 characters long",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+
+      if (lname.length < 2 || lname.length > 150) {
+        throwCustomError(
+          "Last name should be between 2 and 150 characters long",
+          ErrorTypes.BAD_USER_INPUT
+        );
       }
 
       const isUserExists = await userHelper.isEmailAlreadyExist(email);
@@ -45,13 +69,16 @@ const userResolver = {
           ErrorTypes.ALREADY_EXISTS
         );
       }
-      const createdUser = new UserModel({
+
+      const userToCreate = new UserModel({
         email: email,
         password: password,
         fname: fname,
         lname: lname,
       });
-      const user = await createdUser.save();
+
+      const user = await userToCreate.save();
+
       const token = jwt.sign(
         { userId: user._id, email: user.email },
         process.env.JWT_PRIVATE_KEY,
@@ -66,18 +93,26 @@ const userResolver = {
         },
       };
     },
-    // here working on graphql validation
 
     login: async (_, { input: { email, password } }, context) => {
       const user = await UserModel.findOne({
         $and: [{ email: email }, { password: password }],
       });
+
+      if (!validator.isEmail(email)) {
+        throwCustomError(
+          "E-mail type is not in the correct format",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+
       if (user) {
         const token = jwt.sign(
           { userId: user._id, email: user.email },
           process.env.JWT_PRIVATE_KEY,
           { expiresIn: process.env.TOKEN_EXPIRY_TIME }
         );
+
         return {
           ...user._doc,
           userJwtToken: {
@@ -85,6 +120,7 @@ const userResolver = {
           },
         };
       }
+
       throwCustomError(
         "Invalid email or password entered.",
         ErrorTypes.BAD_USER_INPUT
