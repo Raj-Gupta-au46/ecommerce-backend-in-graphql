@@ -66,6 +66,7 @@ const userResolver = {
         },
       };
     },
+    // here working on graphql validation
 
     login: async (_, { input: { email, password } }, context) => {
       const user = await UserModel.findOne({
