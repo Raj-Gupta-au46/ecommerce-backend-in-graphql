@@ -33,15 +33,15 @@ const orderSchema = gql`
 
   input CreateOrderInput {
     user: ID!
-    items: [CreateOrderItemInput]!
+    items: [CreateOrderItemInput!]
     totalPrice: Int!
     totalItems: Int!
     totalQuantity: Int!
   }
 
   input CreateOrderItemInput {
-    product: ID!
-    quantity: Int!
+    product: ID
+    quantity: Int
   }
 `;
 

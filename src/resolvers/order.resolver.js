@@ -13,7 +13,7 @@ const orderResolver = {
     createOrder: async (_, { input }) => {
       const { user, items, totalPrice, totalItems, totalQuantity } = input;
 
-      // Create a new order using the OrderModel
+      // Create a new order using the Order model
       const newOrder = new Order({
         user,
         items: items.map((item) => ({
@@ -25,18 +25,21 @@ const orderResolver = {
         totalQuantity,
       });
 
-      // Save the order to the database
-      const createdOrder = await newOrder.save();
+      try {
+        // Save the order to the database
+        const createdOrder = await newOrder.save();
 
-      // Retrieve the populated order from the database
-      const populatedOrder = await Order.findById(createdOrder._id)
-        .populate("user")
-        .populate("items.product");
+        // Retrieve the populated order from the database
+        const populatedOrder = await Order.findById(createdOrder._id)
+          .populate("user")
+          .populate("items.product");
 
-      return populatedOrder; // Return the populated order
+        return populatedOrder; // Return the populated order
+      } catch (error) {
+        throw new Error("Failed to create order.");
+      }
     },
   },
-
   Order: {
     user: async (parent) => {
       const user = await UserModel.findById(parent.user);

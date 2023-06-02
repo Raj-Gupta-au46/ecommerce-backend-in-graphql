@@ -1,6 +1,6 @@
 import CartModel from "../models/cart.model.js";
 import UserModel from "../models/user.models.js";
-import ProductModel from "../models/product.model.js";
+import Product from "../models/product.model.js";
 import { ApolloError } from "apollo-server-errors";
 
 const resolvers = {
@@ -8,7 +8,7 @@ const resolvers = {
     getCart: async (_, { userId }) => {
       try {
         const cart = await CartModel.findOne({ user: user }).populate(
-          "products.product"
+          "Product.product"
         );
         return cart;
       } catch (error) {

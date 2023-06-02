@@ -1,6 +1,7 @@
 import UserModel from "../models/user.models.js";
 import userHelper from "../helpers/user.helper.js";
 import jwt from "jsonwebtoken";
+import validator from "validator";
 import throwCustomError, {
   ErrorTypes,
 } from "../helpers/error-handler.helper.js";
@@ -32,6 +33,11 @@ const userResolver = {
   Mutation: {
     signup: async (_, { input }) => {
       const { email, password, fname, lname } = input;
+      const errors = [];
+      if (!validator.isEmail(email)) {
+        errors.push({ message: "E-mail is invalid" });
+      }
+
       const isUserExists = await userHelper.isEmailAlreadyExist(email);
       if (isUserExists) {
         throwCustomError(
@@ -39,13 +45,13 @@ const userResolver = {
           ErrorTypes.ALREADY_EXISTS
         );
       }
-      const userToCreate = new UserModel({
+      const createdUser = new UserModel({
         email: email,
         password: password,
         fname: fname,
         lname: lname,
       });
-      const user = await userToCreate.save();
+      const user = await createdUser.save();
       const token = jwt.sign(
         { userId: user._id, email: user.email },
         process.env.JWT_PRIVATE_KEY,
