@@ -40,7 +40,7 @@ const productResolvers = {
           name: name,
           description: description,
           price: price,
-          // category: Category._id,
+          categoryId: categoryId,
           productImage: productImageUrl,
           createdAt: new Date().toISOString(),
         });
