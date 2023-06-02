@@ -16,25 +16,26 @@ const categoryResolver = {
 
       return category;
     },
-    getAllCategory: () => {
-      // console.log("Executing getAllCategory resolver");
-      const categories = Category.find();
-      // console.log("Categories:", categories); // Log the result of Category.find()
-      return categories;
+    getAllCategory: async () => {
+      try {
+        const categories = await Category.find().populate("products");
+        return categories;
+      } catch (error) {
+        throw new Error(error);
+      }
     },
   },
   Mutation: {
-    createCategory: async (parent, { name, field }) => {
+    createCategory: async (parent, { name }) => {
       const newCategory = new Category({
         id: generateCategoryId(),
         name: name,
-        field: field,
       });
 
       const res = await newCategory.save();
       return res;
     },
-    updateCategory: (parent, { id, name, field }) => {
+    updateCategory: (parent, { id, name }) => {
       const categoryIndex = Category.findIndex(
         (category) => category.id === id
       );
@@ -44,7 +45,6 @@ const categoryResolver = {
       }
 
       Category[categoryIndex].name = name || Category[categoryIndex].name;
-      Category[categoryIndex].field = field || Category[categoryIndex].field;
 
       return Category[categoryIndex];
     },
