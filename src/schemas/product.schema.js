@@ -6,10 +6,17 @@ const productSchema = gql`
     name: String!
     description: String!
     price: Int!
-    category: String
+    category: Category
     productImage: String
   }
-
+  type Category {
+    id: ID!
+    name: String!
+    products(filter: ProductsFilterInput): [Product]!
+  }
+  input ProductsFilterInput {
+    name: String
+  }
   type Query {
     getProduct(id: ID!): Product
     getAllProducts: [Product]
@@ -20,7 +27,7 @@ const productSchema = gql`
       name: String!
       description: String!
       price: Int!
-      category: String
+      categoryId: String
       productImage: String
     ): Product
     updateProduct(
@@ -28,7 +35,7 @@ const productSchema = gql`
       name: String
       description: String
       price: Int
-      category: String
+      categoryId: String
       productImage: String
     ): Product
     deleteProduct(id: ID!): Product
