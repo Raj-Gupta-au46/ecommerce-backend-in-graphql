@@ -1,11 +1,12 @@
-HI EVERYONE !!!!-----------
+# HI EVERYONE !!!!-----------
 
-BASICALLY THIS PROJECT CONTAINS THE BACKEND CODE OF ECOMMERCE WEBSITE IN GRAPHQL BY THE HELP OF MANY LIBRARIES LIKE APOLLO SERVER , AWS , JWT ETC ......
+...BASICALLY THIS PROJECT CONTAINS THE BACKEND CODE OF ECOMMERCE WEBSITE IN GRAPHQL BY THE HELP OF MANY LIBRARIES LIKE APOLLO SERVER , AWS , JWT ETC ......
 
 1)- SO THE FIRST THING YOU NEED TO DO IN THIS PROJECT IS TO CREATE YOUR ACCOUNT FOR WHICH U NEED TO FOLLOW GIVEN EXAMPLE AND PROVIDE YOUR DATA OR CREDENTIALS
 
-CREATING USER -
+### CREATING USER -
 
+```
 mutation CreateUser($input: SignupInput) {
 signup(input: $input) {
 userJwtToken {
@@ -18,19 +19,24 @@ email
 \_id
 }
 }
+```
 
-JSON DATA -
+```json -
 {
-"input": {
-"password": "",
-"lname": "",
-"fname": "",
-"email": ""
+  "input": {
+    "password": "",
+    "lname": "",
+    "fname": "",
+    "email": ""
+  }
 }
-}
+```
 
 2)- IF YOU ALLREADY CREATED YOUR ACCOUNT THEN YOU JUST NEED TO FOLLOW THE LOGIN API
 
+### LOGIN USER -
+
+```
 mutation Login($input: LoginInput) {
 login(input: $input) {
 userJwtToken {
@@ -43,11 +49,13 @@ email
 createdAt
 }
 }
+```
 
-JSON DATA -
+```json -
 {
-"input": {
-"password": "",
-"email": ""
+  "input": {
+    "password": "",
+    "email": ""
+  }
 }
-}
+```
