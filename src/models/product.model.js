@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
 import Category from "./category.model.js";
 
-const productSchema = new Schema({
+const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -14,7 +14,7 @@ const productSchema = new Schema({
     type: Number,
     required: true,
   },
-  category: {
+  categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: Category,
   },
