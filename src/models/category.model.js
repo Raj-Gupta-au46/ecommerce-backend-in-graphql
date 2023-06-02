@@ -8,10 +8,12 @@ const categorySchema = new Schema({
   image: {
     type: String,
   },
-  field: {
-    type: String,
-    required: true,
-  },
+  products: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
 });
 
 const Category = model("Category", categorySchema);
