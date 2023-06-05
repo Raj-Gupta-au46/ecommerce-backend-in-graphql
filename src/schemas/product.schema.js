@@ -1,6 +1,7 @@
 import gql from "graphql-tag";
 
 const productSchema = gql`
+  scalar Date
   type Product {
     id: ID!
     name: String!
