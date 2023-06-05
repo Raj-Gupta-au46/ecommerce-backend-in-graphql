@@ -101,7 +101,7 @@ const productResolvers = {
         if (!product) {
           throw new Error(`Product with ID ${id} not found.`);
         }
-        return product;
+        return true;
       } catch (error) {
         throw new Error(error);
       }
