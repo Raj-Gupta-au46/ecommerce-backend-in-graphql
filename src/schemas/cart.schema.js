@@ -32,7 +32,7 @@ const cartSchema = gql`
     addProductToCart(userId: ID!, productId: ID!, quantity: Int!): Cart
     updateCartItemQuantity(userId: ID!, cartItemId: ID!, quantity: Int!): Cart
     removeProductFromCart(userId: ID!, cartItemId: ID!): Cart
-    clearCart(userId: ID!): Cart
+    clearCart(cartId: ID!): Boolean!
   }
 `;
 
