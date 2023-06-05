@@ -38,7 +38,7 @@ const productSchema = gql`
       categoryId: String
       productImage: String
     ): Product
-    deleteProduct(id: ID!): Product
+    deleteProduct(id: ID!): Boolean!
   }
 `;
 
