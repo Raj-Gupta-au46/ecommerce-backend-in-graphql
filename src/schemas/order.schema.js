@@ -29,6 +29,13 @@ const orderSchema = gql`
 
   type Mutation {
     createOrder(input: CreateOrderInput!): Order
+    updateOrder(input: UpdateOrderInput): Order
+    deleteOrder(orderId: ID!): Boolean
+  }
+  input UpdateOrderInput {
+    totalItems: Int
+    totalPrice: Int
+    totalQuantity: Int
   }
 
   input CreateOrderInput {
