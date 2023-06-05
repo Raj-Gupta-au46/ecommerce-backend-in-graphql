@@ -2,6 +2,7 @@ import gql from "graphql-tag";
 
 const productSchema = gql`
   scalar Date
+
   type Product {
     id: ID!
     name: String!
@@ -10,14 +11,17 @@ const productSchema = gql`
     category: Category
     productImage: String
   }
+
   type Category {
     id: ID!
     name: String!
     products(filter: ProductsFilterInput): [Product]!
   }
+
   input ProductsFilterInput {
     name: String
   }
+
   type Query {
     getProduct(id: ID!): Product
     getAllProducts: [Product]

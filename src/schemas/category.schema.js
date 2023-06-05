@@ -6,10 +6,12 @@ const categorySchema = gql`
     name: String!
     products(filter: ProductsFilterInput): [Product]!
   }
+
   input ProductsFilterInput {
     id: ID
     name: String
   }
+
   type Query {
     getCategory(id: ID!): Category
     getAllCategory: [Category]

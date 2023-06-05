@@ -1,18 +1,6 @@
 import gql from "graphql-tag";
 
 const cartSchema = gql`
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-  }
-
-  type Product {
-    id: ID!
-    name: String!
-    price: Int!
-  }
-
   type CartItem {
     id: ID!
     product: Product!
@@ -23,7 +11,7 @@ const cartSchema = gql`
 
   type Cart {
     id: ID!
-    user: User!
+    user: UserWithToken!
     items: [CartItem]!
     total: Float!
   }

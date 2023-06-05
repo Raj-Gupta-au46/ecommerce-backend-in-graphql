@@ -8,6 +8,16 @@ const userSchema = gql`
     fname: String!
     lname: String
   }
+
+  type User {
+    id: ID!
+    email: String!
+    fname: String!
+    lname: String
+    createdAt: DateTime
+    updatedAt: DateTime
+  }
+
   input LoginInput {
     email: String!
     password: String!

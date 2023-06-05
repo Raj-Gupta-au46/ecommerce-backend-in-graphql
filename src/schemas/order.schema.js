@@ -3,24 +3,16 @@ import gql from "graphql-tag";
 const orderSchema = gql`
   type Order {
     _id: ID!
-    user: User!
+    user: UserWithToken!
     items: [OrderItem]
     totalPrice: Int
     totalItems: Int
     totalQuantity: Int
   }
 
-  type User {
-    _id: ID!
-  }
-
   type OrderItem {
     product: Product!
     quantity: Int!
-  }
-
-  type Product {
-    _id: ID!
   }
 
   type Query {
@@ -32,14 +24,16 @@ const orderSchema = gql`
     updateOrder(input: UpdateOrderInput): Order
     deleteOrder(orderId: ID!): Boolean
   }
+
   input UpdateOrderInput {
+    orderId: ID!
     totalItems: Int
     totalPrice: Int
     totalQuantity: Int
   }
 
   input CreateOrderInput {
-    user: ID!
+    userId: ID!
     items: [CreateOrderItemInput!]
     totalPrice: Int!
     totalItems: Int!
@@ -47,8 +41,8 @@ const orderSchema = gql`
   }
 
   input CreateOrderItemInput {
-    product: ID
-    quantity: Int
+    productId: ID!
+    quantity: Int!
   }
 `;
 
