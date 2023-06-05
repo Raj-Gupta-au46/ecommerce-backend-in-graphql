@@ -21,6 +21,7 @@ const userSchema = gql`
   }
   type UserWithToken {
     _id: String
+    password: String
     email: String
     fname: String
     lname: String
@@ -31,6 +32,7 @@ const userSchema = gql`
   type Mutation {
     login(input: LoginInput): UserWithToken
     signup(input: SignupInput): UserWithToken
+    deleteUser(userId: ID!): Boolean!
   }
 `;
 

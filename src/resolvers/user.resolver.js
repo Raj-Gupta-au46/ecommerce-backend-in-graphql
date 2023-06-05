@@ -2,6 +2,7 @@ import UserModel from "../models/user.models.js";
 import userHelper from "../helpers/user.helper.js";
 import jwt from "jsonwebtoken";
 import validator from "validator";
+import bcrypt from "bcryptjs";
 import throwCustomError, {
   ErrorTypes,
 } from "../helpers/error-handler.helper.js";
@@ -47,6 +48,7 @@ const userResolver = {
           ErrorTypes.BAD_USER_INPUT
         );
       }
+      const hashedPassword = await bcrypt.hash(password, 12);
 
       if (fname.length < 2 || fname.length > 150) {
         throwCustomError(
@@ -72,7 +74,7 @@ const userResolver = {
 
       const userToCreate = new UserModel({
         email: email,
-        password: password,
+        password: hashedPassword,
         fname: fname,
         lname: lname,
       });
@@ -125,6 +127,17 @@ const userResolver = {
         "Invalid email or password entered.",
         ErrorTypes.BAD_USER_INPUT
       );
+    },
+    deleteUser: async (parent, { userId }) => {
+      try {
+        const user = await UserModel.findByIdAndDelete(userId);
+        if (!user) {
+          throw new Error(`User with id ${userId} is not present`);
+        }
+        return true;
+      } catch (error) {
+        throw new Error(error);
+      }
     },
   },
 };
