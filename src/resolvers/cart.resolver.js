@@ -155,6 +155,7 @@ const cartResolvers = {
   },
   Mutation: {
     addProductToCart: async (_, { userId, productId, quantity, price }) => {
+      console.log(input);
       try {
         const existingCart = await CartModel.findOne({ user: userId });
 

@@ -12,34 +12,42 @@ const orderResolver = {
   },
   Mutation: {
     createOrder: async (_, { input }) => {
-      const { user, items, totalPrice, totalItems, totalQuantity } = input;
-      const person = await UserModel.findById(user);
-      if (!person) {
-        throw new GraphQLError("User not found", {
-          extensions: {
-            code: "USER_NOT_FOUND",
-          },
-        });
-      }
-
-      // Create a new order using the Order model
-      const newOrder = new Order({
-        user,
-        items: items.map((item) => ({
-          product: item.product,
-          quantity: item.quantity,
-        })),
-        totalPrice,
-        totalItems,
-        totalQuantity,
-      });
-
       try {
-        // Save the order to the database
-        const createdOrder = await newOrder.save();
-        return createdOrder;
+        const { user, items, totalPrice, totalItems, totalQuantity } = input;
+        // console.log(input);
+        const users = await UserModel.findById({ _id: user });
+        console.log(users);
+        // if (!users) {
+        //   throw new GraphQLError("User not found", "USER_NOT_FOUND");
+        // }
+        // const newOrder = new Order({
+        //   user,
+        //   items: [{product,quantity}]
+        //   totalPrice,
+        //   totalItems,
+        //   totalQuantity,
+        // });
+        // console.log("newOrder==", newOrder);
+        // const createdOrder = await newOrder.save();
+        // console.log("createdOrder==", createdOrder);
+        // return createdOrder;
+        const newOrder = await Order.create({
+          user,
+          items,
+          totalPrice,
+          totalItems,
+          totalQuantity,
+        });
+        return newOrder;
       } catch (error) {
-        throw new Error("Failed to create order.");
+        if (error.extensions) {
+          throw error;
+        } else {
+          throw new GraphQLError(
+            "Failed to create order",
+            "CREATE_ORDER_FAILED"
+          );
+        }
       }
     },
     updateOrder: async (_, args) => {
