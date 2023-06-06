@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 const cartSchema = gql`
   type CartItem {
     id: ID!
-    product: Product!
+    productId: Product!
     quantity: Int!
     total: Float!
     createdAt: DateTime
@@ -11,7 +11,7 @@ const cartSchema = gql`
 
   type Cart {
     id: ID!
-    user: UserWithToken!
+    userId: UserWithToken!
     items: [CartItem]!
     total: Float!
   }
