@@ -95,7 +95,7 @@ const adminResolver = {
         return {
           __typename: "Admin",
           ...admin._doc,
-          adminJwtToken: {
+          token: {
             token: token,
           },
         };
