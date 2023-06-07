@@ -1,85 +1,118 @@
 import Order from "../models/order.model.js";
 import UserModel from "../models/user.models.js";
-import Product from "../models/product.model.js";
+
 import { GraphQLError } from "graphql";
 
 const orderResolver = {
   Query: {
-    getOrderById: async (_, { orderId }) => {
-      const order = await Order.findById(orderId);
-      return order;
-    },
-  },
-  Mutation: {
-    createOrder: async (_, { input }) => {
+    getAllOrder: async () => {
       try {
-        const { user, items, totalPrice, totalItems, totalQuantity } = input;
-        // console.log(input);
-        const users = await UserModel.findById({ _id: user });
-        console.log(users);
-        // if (!users) {
-        //   throw new GraphQLError("User not found", "USER_NOT_FOUND");
-        // }
-        // const newOrder = new Order({
-        //   user,
-        //   items: [{product,quantity}]
-        //   totalPrice,
-        //   totalItems,
-        //   totalQuantity,
-        // });
-        // console.log("newOrder==", newOrder);
-        // const createdOrder = await newOrder.save();
-        // console.log("createdOrder==", createdOrder);
-        // return createdOrder;
-        const newOrder = await Order.create({
-          user,
-          items,
-          totalPrice,
-          totalItems,
-          totalQuantity,
-        });
-        return newOrder;
+        const res = await Order.find().populate("customer");
+
+        return res;
       } catch (error) {
-        if (error.extensions) {
-          throw error;
-        } else {
-          throw new GraphQLError(
-            "Failed to create order",
-            "CREATE_ORDER_FAILED"
-          );
-        }
-      }
-    },
-    updateOrder: async (_, args) => {
-      const orderID = await Order.findById(args.id);
-      if (!orderID) {
-        throw new GraphQLError("Order is not available", {
+        throw new GraphQLError(`Error ${error}`, {
           extensions: {
-            code: "NO_ORDER_AVAILABLE",
+            code: `ERROR ${error}`,
           },
         });
       }
-
-      const updatedOrder = await Order.findByIdAndUpdate(args.id, args.input, {
-        new: true,
-      });
-      return updatedOrder;
     },
+    getOrder: async (_, args, context) => {
+      const orderId = await Order.findById(args.id);
 
-    deleteOrder: async (_, { orderId }) => {
+      if (!orderId) {
+        throw new GraphQLError("OrderID not found ", {
+          extensions: {
+            code: "ORDER_ID IS NOT FOUND",
+          },
+        });
+      } else {
+        return orderId;
+      }
+    },
+  },
+  Mutation: {
+    createOrder: async (_, args, context) => {
+      console.log(args);
       try {
-        const order = await Order.findById(orderId);
-        if (!order) {
-          throw new GraphQLError("Order not found", {
+        const { orderNumber, customer, totalAmount } = args.input;
+        const user = await UserModel.findById(customer);
+
+        if (!user) {
+          throw new GraphQLError("User not found", {
             extensions: {
-              code: "ORDER_NOT_FOUND",
+              code: "USER_NOT_FOUND",
             },
           });
+        } else {
+          const existingOrder = await Order.findOne({ orderNumber });
+          console.log("orderId");
+          console.log(existingOrder);
+          if (existingOrder) {
+            throw new GraphQLError("Order is already created", {
+              extensions: {
+                code: "ORDER ALREADY CREATED",
+              },
+            });
+          } else {
+            const newOrder = new Order({
+              orderNumber,
+              customer,
+              totalAmount,
+            });
+            const res = await newOrder.save();
+            //  console.log(res);
+            return {
+              id: res.id,
+              ...res._doc,
+              customer: {
+                id: user._id,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+              },
+            };
+          }
         }
-        const deletedOrder = await Order.findByIdAndDelete(orderId);
-        return true;
       } catch (error) {
-        throw new Error("Failed to delete order.");
+        throw new GraphQLError(`Error ${error}`, {
+          extensions: {
+            code: "ERROR",
+          },
+        });
+      }
+    },
+    updateOrder: async (_, args, context) => {
+      console.log(args);
+      const orderID = await Order.findById(args.id);
+      if (!orderID) {
+        throw new GraphQLError("Order is Not Found", {
+          extensions: {
+            code: "ORDER IS NOT FOUND",
+          },
+        });
+      } else {
+        const updateOrder = await Order.findByIdAndUpdate(args.id, args.input, {
+          new: true,
+        });
+
+        return updateOrder;
+      }
+    },
+    deleteOrder: async (_, args, context) => {
+      console.log(args);
+      const OrderID = await Order.findById(args.id);
+      if (!OrderID) {
+        throw new GraphQLError("Order is Not Found", {
+          extensions: {
+            code: "ORDER IS NOT FOUND",
+          },
+        });
+      } else {
+        const deletedOrder = await Order.findByIdAndDelete(args.id);
+
+        return deletedOrder;
       }
     },
   },

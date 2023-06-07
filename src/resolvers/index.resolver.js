@@ -5,6 +5,7 @@ import cartResolver from "./cart.resolver.js";
 import orderResolver from "./order.resolver.js";
 import reviewResolver from "./review.resolver.js";
 import adminResolver from "./admin.resolver.js";
+import orderItemResolvers from "./orderItem.resolver.js";
 
 export default [
   userResolver,
@@ -14,4 +15,5 @@ export default [
   orderResolver,
   reviewResolver,
   adminResolver,
+  orderItemResolvers,
 ];
