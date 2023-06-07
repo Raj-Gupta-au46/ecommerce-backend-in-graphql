@@ -4,7 +4,7 @@ const categorySchema = gql`
   type Category {
     id: ID!
     name: String!
-    products(filter: ProductsFilterInput): [Product]!
+    products(input: ProductsFilterInput): [Product]!
   }
 
   input ProductsFilterInput {

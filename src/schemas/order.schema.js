@@ -1,49 +1,34 @@
 import gql from "graphql-tag";
-
-const orderSchema = gql`
+const orderTypeDefs = gql`
+  scalar Date
   type Order {
-    _id: ID!
-    user: UserWithToken!
-    items: [OrderItem]
-    totalPrice: Int
-    totalItems: Int
-    totalQuantity: Int
-  }
-
-  type OrderItem {
-    product: Product!
-    quantity: Int!
+    id: ID!
+    orderNumber: String!
+    customer: User!
+    totalAmount: Float!
+    createAt: Date
   }
 
   type Query {
-    getOrderById(orderId: ID!): Order
+    getAllOrder: [Order!]!
+    getOrder(id: ID!): Order!
   }
 
   type Mutation {
-    createOrder(input: CreateOrderInput!): Order
-    updateOrder(input: UpdateOrderInput): Order
-    deleteOrder(orderId: ID!): Boolean
+    createOrder(input: createOrderInput): Order!
+    updateOrder(id: ID!, input: updateOrderInput): Order!
+    deleteOrder(id: ID!): Boolean!
   }
 
-  input UpdateOrderInput {
-    orderId: ID!
-    totalItems: Int
-    totalPrice: Int
-    totalQuantity: Int
+  input createOrderInput {
+    orderNumber: String!
+    customer: ID!
+    totalAmount: Float!
   }
-
-  input CreateOrderInput {
-    userId: ID!
-    items: [CreateOrderItemInput!]
-    totalPrice: Int!
-    totalItems: Int!
-    totalQuantity: Int!
-  }
-
-  input CreateOrderItemInput {
-    productId: ID!
-    quantity: Int!
+  input updateOrderInput {
+    orderNumber: String!
+    totalAmount: Float!
   }
 `;
 
-export default orderSchema;
+export default orderTypeDefs;
