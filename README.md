@@ -76,7 +76,7 @@ mutation CreateProduct($name: String!, $description: String!, $price: Int!) {
 
 ```
 
-```json-
+```json -
 {  "name": "",
   "description": "",
   "price":
@@ -100,7 +100,7 @@ mutation AddReview($input: AddReviewInput!) {
 }
 ```
 
-```json-
+```json -
 {
   "input": {
     "title": "",
@@ -127,7 +127,7 @@ mutation CreateCategory($name: String!, $input: ProductsFilterInput) {
 }
 ```
 
-```json-
+```json -
 {
   "name": "",
   "input": {
