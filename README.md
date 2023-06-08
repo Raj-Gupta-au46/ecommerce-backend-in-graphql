@@ -59,3 +59,109 @@ createdAt
   }
 }
 ```
+
+3)-Create product
+
+### Create Product
+
+```
+mutation CreateProduct($name: String!, $description: String!, $price: Int!) {
+  createProduct(name: $name, description: $description, price: $price) {
+    price
+    name
+    id
+    description
+  }
+}
+
+```
+
+```json-
+{  "name": "",
+  "description": "",
+  "price":
+}
+
+```
+
+4)- Create Review of the product
+
+### Reaview Creation
+
+```
+mutation AddReview($input: AddReviewInput!) {
+  addReview(input: $input) {
+    title
+    rating
+    createdAt
+    comment
+    id
+  }
+}
+```
+
+```json-
+{
+  "input": {
+    "title": "",
+    "rating": ,
+    "productId":"" ,
+    "comment": ""
+  }
+}
+```
+
+5)-Create Category for the products
+
+### Create Category
+
+```
+mutation CreateCategory($name: String!, $input: ProductsFilterInput) {
+  createCategory(name: $name) {
+    name
+    id
+    products(input: $input) {
+      name
+    }
+  }
+}
+```
+
+```json-
+{
+  "name": "",
+  "input": {
+    "id": ""
+  }
+}
+```
+
+6)-Create Order for the present product
+
+### Create Order
+
+```
+mutation CreateOrder($input: createOrderInput) {
+  createOrder(input: $input) {
+    totalAmount
+    orderNumber
+    id
+    customer {
+
+      email
+    }
+    createAt
+  }
+}
+```
+
+```json-
+{
+  "input": {
+    "totalAmount": ,
+    "orderNumber": "",
+    "customer": ""
+  }
+}
+
+```
