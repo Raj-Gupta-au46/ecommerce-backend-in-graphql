@@ -200,3 +200,27 @@ mutation CreateOrderItem($input: createOrderItemInput) {
   }
 }
 ```
+
+8)- Creating the payment of the products
+
+### Payment Create
+
+```mutation CreatePayment($input: createPaymentInput) {
+  createPayment(input: $input) {
+    paymentMethod
+    createdAt
+    amount
+  }
+}
+```
+
+```json -
+{
+ "input": {
+    "paymentStatus": "" ,
+    "paymentMethod": "",
+    "orderId": "",
+    "amount":
+  }
+}
+```
