@@ -6,6 +6,7 @@ import orderResolver from "./order.resolver.js";
 import reviewResolver from "./review.resolver.js";
 import adminResolver from "./admin.resolver.js";
 import orderItemResolvers from "./orderItem.resolver.js";
+import paymentResolvers from "./payment.resolver.js";
 
 export default [
   userResolver,
@@ -16,4 +17,5 @@ export default [
   reviewResolver,
   adminResolver,
   orderItemResolvers,
+  paymentResolvers,
 ];
