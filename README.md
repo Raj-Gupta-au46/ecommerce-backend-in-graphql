@@ -16,7 +16,7 @@ updatedAt
 lname
 fname
 email
-\_id
+_id
 }
 }
 ```
@@ -45,7 +45,7 @@ token
 lname
 fname
 email
-\_id
+_id
 createdAt
 }
 }
@@ -164,4 +164,39 @@ mutation CreateOrder($input: createOrderInput) {
   }
 }
 
+```
+
+7)- Create OrderItems for the present carts
+
+### Create OrderItems
+
+```
+
+mutation CreateOrderItem($input: createOrderItemInput) {
+  createOrderItem(input: $input) {
+    price
+    productId {
+      name
+    }
+    categoryId {
+      name
+    }
+    createdAt
+    totalPrice
+    quantity
+    id
+  }
+}
+
+```
+
+```json -
+{
+  "input": {
+    "quantity": ,
+    "productId": "",
+    "price": ,
+    "categoryId": ""
+  }
+}
 ```
