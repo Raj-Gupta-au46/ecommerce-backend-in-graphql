@@ -155,7 +155,7 @@ mutation CreateOrder($input: createOrderInput) {
 }
 ```
 
-```json-
+```json -
 {
   "input": {
     "totalAmount": ,
