@@ -1,12 +1,12 @@
 import gql from "graphql-tag";
 const orderTypeDefs = gql`
-  scalar Date
+  scalar DateTime
   type Order {
     id: ID!
     orderNumber: String!
     customer: User!
     totalAmount: Float!
-    createAt: Date
+    createAt: DateTime
   }
 
   type Query {

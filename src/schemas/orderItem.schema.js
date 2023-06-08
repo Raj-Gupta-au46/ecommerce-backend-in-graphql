@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 const orderItemSchema = gql`
-  scalar Date
+  scalar DateTime
   type OrderItem {
     id: ID!
     productId: Product!
@@ -8,7 +8,7 @@ const orderItemSchema = gql`
     quantity: Int!
     price: Float!
     totalPrice: Float!
-    createdAt: Date!
+    createdAt: DateTime!
   }
 
   type Query {
@@ -19,7 +19,7 @@ const orderItemSchema = gql`
   type Mutation {
     createOrderItem(input: createOrderItemInput): OrderItem!
     updateOrderItem(id: ID!, input: updateOrderItemInput): OrderItem!
-    deleteOrderItem(id: ID!): OrderItem!
+    deleteOrderItem(id: ID!): Boolean!
   }
 
   input createOrderItemInput {
