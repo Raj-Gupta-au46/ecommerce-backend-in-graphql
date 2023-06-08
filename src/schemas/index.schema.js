@@ -6,6 +6,7 @@ import orderSchema from "./order.schema.js";
 import reviewSchema from "./review.schema.js";
 import adminSchema from "./admin.schema.js";
 import orderItemSchema from "./orderItem.schema.js";
+import paymentSchema from "./payment.schema.js";
 export default [
   userSchema,
   productSchema,
@@ -15,4 +16,5 @@ export default [
   reviewSchema,
   adminSchema,
   orderItemSchema,
+  paymentSchema,
 ];
