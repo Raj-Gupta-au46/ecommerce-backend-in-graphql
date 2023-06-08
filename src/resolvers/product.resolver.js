@@ -17,7 +17,7 @@ const productResolvers = {
     },
     getAllProducts: async () => {
       try {
-        const products = await Product.find().populate("category");
+        const products = await Product.find();
         return products;
       } catch (error) {
         throw new Error(error);
