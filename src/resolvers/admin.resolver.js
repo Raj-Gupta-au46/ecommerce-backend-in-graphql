@@ -31,14 +31,13 @@ const adminResolver = {
   },
 
   Mutation: {
-    createAdmin: async (_, args, context) => {
-      const { username, email, password, role } = args.input;
+    createAdmin: async (_, { input }, context) => {
+      const { username, email, password, role } = input;
 
       if (!validator.isEmail(email)) {
         throw new GraphQLError(
           "E-mail type is not in the correct format",
-          null,
-          null,
+
           {
             errorType: ErrorTypes.BAD_USER_INPUT,
           }
@@ -48,8 +47,7 @@ const adminResolver = {
       if (password.length < 6) {
         throw new GraphQLError(
           "Password should be at least 6 characters long",
-          null,
-          null,
+
           {
             errorType: ErrorTypes.BAD_USER_INPUT,
           }
@@ -61,8 +59,7 @@ const adminResolver = {
       if (username.length < 2 || username.length > 150) {
         throw new GraphQLError(
           "Username should be between 2 and 150 characters long",
-          null,
-          null,
+
           {
             errorType: ErrorTypes.BAD_USER_INPUT,
           }
@@ -105,11 +102,11 @@ const adminResolver = {
         });
       }
     },
-    updateAdmin: async (_, args, context) => {
-      const { username, email, password } = args.input;
+    updateAdmin: async (_, { input }, context) => {
+      const { username, email, password } = input;
       try {
         const existingAdmin = await Admin.findById(args.id);
-        console.log(existingAdmin);
+
         if (!existingAdmin) {
           throw new GraphQLError("Admin not exist", {
             extensions: {
@@ -159,7 +156,7 @@ const adminResolver = {
       const { username, password } = args.input;
 
       if (!validator.isEmail(username)) {
-        throw new GraphQLError("Username should be a valid email", null, null, {
+        throw new GraphQLError("Username should be a valid email", {
           errorType: ErrorTypes.BAD_USER_INPUT,
         });
       }
