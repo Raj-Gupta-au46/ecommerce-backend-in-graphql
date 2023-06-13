@@ -16,7 +16,7 @@ const productResolvers = {
         throw new Error(error);
       }
     },
-    getAllProducts: async () => {
+    getAllProducts: async (_, { page, limit }) => {
       try {
         const skip = (page - 1) * limit;
         const totalCount = await Product.countDocuments();
