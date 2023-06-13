@@ -47,3 +47,35 @@ const userSchema = gql`
 `;
 
 export default userSchema;
+
+// type Query {
+//   getUsers(total: Int): UserOrError
+//   getUserById(id: ID!): User!
+// }
+
+// type UserOrError = User | Error
+
+// type Error {
+//   message: String!
+// }
+
+// type User {
+//   id: ID!
+//   email: String!
+//   fname: String!
+//   lname: String
+//   createdAt: DateTime
+//   updatedAt: DateTime
+// }
+
+// UserOrError: {
+//   __resolveType: (obj) => {
+//     if (obj.errors) {
+//       return 'Error';
+//     } else if (obj.id) {
+//       return 'User';
+//     }
+
+//     throw new Error('Unable to resolve UserOrError type');
+//   },
+// },

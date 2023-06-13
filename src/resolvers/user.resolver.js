@@ -81,11 +81,15 @@ const userResolver = {
 
       const user = await userToCreate.save();
 
-      const token = jwt.sign(
-        { userId: user._id, email: user.email },
-        process.env.JWT_PRIVATE_KEY,
-        { expiresIn: process.env.TOKEN_EXPIRY_TIME }
-      );
+      const generateToken = (user) => {
+        const token = jwt.sign(
+          { userId: user._id, email: user.email },
+          process.env.JWT_PRIVATE_KEY,
+          { expiresIn: process.env.TOKEN_EXPIRY_TIME }
+        );
+        return token;
+      };
+      const token = generateToken(user);
 
       return {
         __typename: "UserWithToken",
