@@ -230,11 +230,12 @@ const cartResolvers = {
       }
     },
 
-    clearCart: async (_, { cartId }) => {
+    clearCart: async (_, { id }) => {
       try {
-        const cart = await CartModel.findByIdAndDelete(cartId);
+        console.log(id);
+        const cart = await CartModel.findByIdAndDelete(id);
         if (!cart) {
-          throw new Error(`Cart with ID ${cartId} not found.`);
+          throw new Error(`Cart with ID ${id} not found.`);
         }
         return true;
       } catch (error) {
