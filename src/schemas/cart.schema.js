@@ -29,7 +29,7 @@ const cartSchema = gql`
     ): Cart
     updateCartItemQuantity(userId: ID!, cartItemId: ID!, quantity: Int!): Cart
     removeProductFromCart(userId: ID!, cartItemId: ID!): Cart
-    clearCart(userId: ID!): Boolean
+    clearCart(id: ID!): Boolean!
   }
 `;
 
