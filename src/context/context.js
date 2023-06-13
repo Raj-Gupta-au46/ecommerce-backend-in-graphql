@@ -1,32 +1,60 @@
 import jwt from "jsonwebtoken";
 import { GraphQLError } from "graphql";
 
-export const getUser = async (token) => {
+const getUser = async (token) => {
   try {
     if (token) {
-      const decodedToken = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-      return decodedToken;
+      const user = await jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+      return user;
     }
-    return null;
+    throw new GraphQLError("User is not authenticated", {
+      extensions: {
+        code: "UNAUTHENTICATED",
+        http: { status: 401 },
+      },
+    });
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      throw new GraphQLError("Token expired. Please authenticate again.", {
+    throw new GraphQLError("User is not authenticated", {
+      extensions: {
+        code: "UNAUTHENTICATED",
+        http: { status: 401 },
+      },
+    });
+  }
+};
+const context = async ({ req, res }) => {
+  try {
+    console.log(req.path);
+    const token = req.headers.authorization || "";
+    console.log(token);
+    if (!token)
+      throw new GraphQLError("User is not authenticated", {
         extensions: {
-          code: "TOKEN_EXPIRED",
+          code: "UNAUTHENTICATED",
+          http: { status: 401 },
         },
       });
-    } else if (error instanceof jwt.JsonWebTokenError) {
-      throw new GraphQLError("Invalid token. Please provide a valid JWT.", {
+
+    const user = await getUser(token);
+
+    if (!user) {
+      throw new GraphQLError("User is not authenticated", {
         extensions: {
-          code: "TOKEN_INVALID",
+          code: "UNAUTHENTICATED",
+          http: { status: 401 },
         },
       });
     } else {
-      throw new GraphQLError("Error occurred while decoding token.", {
-        extensions: {
-          code: "TOKEN_DECODING_ERROR",
-        },
-      });
+      const admin = user.role === "admin"; // Assuming the user object has a 'role' property
+      if (admin) {
+        return { user, isAdmin: true };
+      } else {
+        return { user };
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
 };
+
+export default context;
