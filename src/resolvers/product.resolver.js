@@ -5,7 +5,18 @@ import Admin from "../models/admin.model.js";
 
 const productResolvers = {
   Query: {
-    getAllProducts: async (_, { page, limit }) => {
+    getProduct: async (parent, { id }) => {
+      try {
+        const product = await Product.findById(id).populate("category");
+        if (!product) {
+          throw new Error(`Product with ID ${id} not found.`);
+        }
+        return product;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    getAllProducts: async () => {
       try {
         const skip = (page - 1) * limit;
         const totalCount = await Product.countDocuments();
@@ -19,14 +30,6 @@ const productResolvers = {
           currentPage: page,
           totalCount,
         };
-      } catch (error) {
-        throw new Error(error);
-      }
-    },
-    getAllProducts: async () => {
-      try {
-        const products = await Product.find();
-        return products;
       } catch (error) {
         throw new Error(error);
       }
