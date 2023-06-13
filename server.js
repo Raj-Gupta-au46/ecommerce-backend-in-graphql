@@ -4,12 +4,11 @@ import * as dotenv from "dotenv";
 import mongoose from "mongoose";
 import allTypeDefs from "./src/schemas/index.schema.js";
 import allResolvers from "./src/resolvers/index.resolver.js";
-import { getUser } from "./src/context/context.js";
+import context from "./src/context/context.js";
 import {
   constraintDirectiveTypeDefs,
   constraintDirective,
 } from "graphql-constraint-directive";
-import { GraphQLError } from "graphql";
 
 dotenv.config();
 
@@ -23,47 +22,18 @@ const server = new ApolloServer({
   introspection: true,
 });
 
+const mongoDB = process.env.MONGODB_URL;
+
+mongoose.set("strictQuery", true);
 mongoose
-  .connect(process.env.MONGODB_URL, { useNewUrlParser: true })
+  .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log("MongoDB is connected successfully");
+    console.log("Connected to MongoDB..");
     return startStandaloneServer(server, {
-      context: async ({ req, res }) => {
-        try {
-          const token = req.headers.authorization || " ";
-
-          if (!token) {
-            throw new Error("Missing authentication token");
-          }
-          const user = await getUser(token);
-
-          if (!user) {
-            throw new GraphQLError("User is not authenticated", {
-              extensions: {
-                code: "UNAUTHENTICATED",
-                http: { status: 401 },
-              },
-            });
-          } else {
-            const admin = user.role;
-            if (admin === "admin") {
-              return { user };
-            } else {
-              return { user };
-            }
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      listen: {
-        port: 4000,
-      },
+      listen: { port: process.env.PORT },
+      context: context,
     });
   })
   .then((server) => {
     console.log(`🚀  Server ready at: ${server.url}`);
-  })
-  .catch((error) => {
-    console.log(error);
   });
