@@ -10,12 +10,24 @@ import { GraphQLError } from "graphql";
 
 const userResolver = {
   Query: {
-    getUsers: async (_, { total }, contextValue) => {
+    getUsers: async (_, { page, limit }) => {
       try {
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const totalUsers = await UserModel.countDocuments();
+        const totalPages = Math.ceil(totalUsers / limit);
+
         const users = await UserModel.find()
           .sort({ createdAt: -1 })
-          .limit(total);
-        return users;
+          .skip(startIndex)
+          .limit(limit);
+
+        return {
+          users,
+          currentPage: page,
+          totalPages,
+        };
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -101,9 +113,7 @@ const userResolver = {
     },
 
     login: async (_, { input: { email, password } }, context) => {
-      const user = await UserModel.findOne({
-        $and: [{ email: email }, { password: password }],
-      });
+      const user = await UserModel.findOne({ email });
 
       if (!validator.isEmail(email)) {
         throwCustomError(
@@ -113,18 +123,21 @@ const userResolver = {
       }
 
       if (user) {
-        const token = jwt.sign(
-          { userId: user._id, email: user.email },
-          process.env.JWT_PRIVATE_KEY,
-          { expiresIn: process.env.TOKEN_EXPIRY_TIME }
-        );
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (passwordMatch) {
+          const token = jwt.sign(
+            { userId: user._id, email: user.email },
+            process.env.JWT_PRIVATE_KEY,
+            { expiresIn: process.env.TOKEN_EXPIRY_TIME }
+          );
 
-        return {
-          ...user._doc,
-          userJwtToken: {
-            token: token,
-          },
-        };
+          return {
+            ...user._doc,
+            userJwtToken: {
+              token: token,
+            },
+          };
+        }
       }
 
       throwCustomError(
