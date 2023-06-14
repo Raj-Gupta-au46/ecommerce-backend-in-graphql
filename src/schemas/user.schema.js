@@ -23,7 +23,7 @@ const userSchema = gql`
     password: String!
   }
   type Query {
-    getUsers(total: Int): [User]
+    getAllUsers(total: Int): [User]!
     getUserById(id: ID!): User!
   }
   type JwtToken {

@@ -24,7 +24,7 @@ const productSchema = gql`
 
   type Query {
     getProduct(id: ID!): Product
-    getAllProducts: [Product]
+    getAllProducts(page: Int): [Product]!
   }
 
   type Mutation {
