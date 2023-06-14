@@ -16,20 +16,32 @@ const productResolvers = {
         throw new Error(error);
       }
     },
-    getAllProducts: async (_, { page, limit }) => {
+    getAllProducts: async (_, { page }, context) => {
       try {
-        const skip = (page - 1) * limit;
-        const totalCount = await Product.countDocuments();
-        const totalPages = Math.ceil(totalCount / limit);
+        const { user } = context;
+        console.log(user);
+        if (user || user.role === "admin") {
+          if (!page) {
+            page = 1;
+          }
+          const perPage = page;
+          const skip = (page - 1) * perPage;
+          // console.log(skip);
 
-        const products = await Product.find().skip(skip).limit(limit);
+          const products = await Product.find()
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(perPage);
 
-        return {
-          products,
-          totalPages,
-          currentPage: page,
-          totalCount,
-        };
+          return products;
+        } else {
+          throw new GraphQLError("User is not Authenticated", {
+            extensions: {
+              code: "UNAUTHENTICATED",
+              http: { status: 401 },
+            },
+          });
+        }
       } catch (error) {
         throw new Error(error);
       }
@@ -43,17 +55,17 @@ const productResolvers = {
     ) => {
       try {
         const { user } = context; // Assuming the authenticated user is available in the context
-        console.log("hit");
-        console.log(user);
-        console.log("end");
-        console.log(user.adminId);
+        // console.log("hit");
+        // console.log(user);
+        // // console.log("end");
+        // console.log(user.adminId);
 
         const adminDetails = await Admin.findById(user.adminId);
-        console.log("admin");
-        console.log(adminDetails);
-        console.log("end");
-        console.log(adminDetails._id + "adminid");
-        console.log(user.adminId + "user id");
+        // console.log("admin");
+        // console.log(adminDetails);
+        // console.log("end");
+        // console.log(adminDetails._id + "adminid");
+        // console.log(user.adminId + "user id");
         if (adminDetails._id && user.adminId) {
           let productImageUrl = "";
           if (productImage) {
@@ -123,13 +135,19 @@ const productResolvers = {
         throw new Error(error);
       }
     },
-    deleteProduct: async (parent, { id }) => {
+    deleteProduct: async (parent, { id }, context) => {
       try {
-        const product = await Product.findByIdAndDelete(id);
-        if (!product) {
-          throw new Error(`Product with ID ${id} not found.`);
+        const { user } = context;
+        const adminDetails = await Admin.findById(user.adminId);
+        if (adminDetails._id && user.adminId) {
+          const product = await Product.findByIdAndDelete(id);
+          if (!product) {
+            throw new Error(`Product with ID ${id} not found.`);
+          }
+          return true;
+        } else {
+          throw new Error("Only admin can delete a product");
         }
-        return true;
       } catch (error) {
         throw new Error(error);
       }

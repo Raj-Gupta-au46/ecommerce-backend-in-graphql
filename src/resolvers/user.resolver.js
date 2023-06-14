@@ -10,24 +10,21 @@ import { GraphQLError } from "graphql";
 
 const userResolver = {
   Query: {
-    getUsers: async (_, { page, limit }) => {
+    getAllUsers: async (_, { total }) => {
       try {
-        const startIndex = (page - 1) * limit;
-        const endIndex = page * limit;
-
-        const totalUsers = await UserModel.countDocuments();
-        const totalPages = Math.ceil(totalUsers / limit);
-
+        // console.log("hit===================");
+        // console.log(total);
+        if (!total) {
+          total = 1;
+        }
+        const perUser = total;
+        const skip = (total - 1) * perUser;
         const users = await UserModel.find()
           .sort({ createdAt: -1 })
-          .skip(startIndex)
-          .limit(limit);
+          .skip(skip)
+          .limit(perUser);
 
-        return {
-          users,
-          currentPage: page,
-          totalPages,
-        };
+        return users;
       } catch (error) {
         throw new GraphQLError(error.message);
       }
