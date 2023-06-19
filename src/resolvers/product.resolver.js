@@ -55,17 +55,9 @@ const productResolvers = {
     ) => {
       try {
         const { user } = context; // Assuming the authenticated user is available in the context
-        // console.log("hit");
-        // console.log(user);
-        // // console.log("end");
-        // console.log(user.adminId);
 
         const adminDetails = await Admin.findById(user.adminId);
-        // console.log("admin");
-        // console.log(adminDetails);
-        // console.log("end");
-        // console.log(adminDetails._id + "adminid");
-        // console.log(user.adminId + "user id");
+
         if (adminDetails._id && user.adminId) {
           let productImageUrl = "";
           if (productImage) {
