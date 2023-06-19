@@ -2,12 +2,6 @@ import gql from "graphql-tag";
 
 const userSchema = gql`
   scalar DateTime
-  input SignupInput {
-    email: String!
-    password: String!
-    fname: String!
-    lname: String
-  }
 
   type User {
     id: ID!
@@ -16,6 +10,12 @@ const userSchema = gql`
     lname: String
     createdAt: DateTime
     updatedAt: DateTime
+  }
+  input SignupInput {
+    email: String!
+    password: String!
+    fname: String!
+    lname: String
   }
 
   input LoginInput {

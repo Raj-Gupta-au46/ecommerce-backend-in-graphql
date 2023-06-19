@@ -4,23 +4,27 @@ const categorySchema = gql`
   type Category {
     id: ID!
     name: String!
-    products(input: ProductsFilterInput): [Product]!
+    description: String!
   }
-
-  input ProductsFilterInput {
-    id: ID
-    name: String
-  }
-
   type Query {
-    getCategory(id: ID!): Category
-    getAllCategory: [Category]
+    getAllCategory: [Category]!
+    getCategory(id: ID!): Category!
   }
 
   type Mutation {
-    createCategory(name: String!): Category
-    updateCategory(id: ID!, name: String): Category
+    createCategory(input: createCategoryInput): Category!
+    updateCategory(id: ID!, input: updateCategoryInput): Category!
     deleteCategory(id: ID!): Boolean!
+  }
+
+  input createCategoryInput {
+    name: String!
+    description: String!
+  }
+
+  input updateCategoryInput {
+    name: String!
+    description: String!
   }
 `;
 
